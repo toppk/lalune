@@ -40,7 +40,7 @@ does not publish to npm and requires no npm token.
 4. When ready to make the version public, run `npm publish --access public`.
    Complete any required npm confirmation. A published name/version cannot be
    reused for a different archive; do not treat publication as a throwaway test.
-5. Verify the version with `npm view @toppk/lalune@0.2.0`, then create the matching
+5. Verify the version with `npm view @toppk/lalune@0.2.1`, then create the matching
    GitHub release/tag and update the installation documentation to reflect
    the actual public package. These steps require deliberate release actions;
    the dry-run workflow does not perform them.

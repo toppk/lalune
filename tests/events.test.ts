@@ -46,6 +46,14 @@ test('principal phase names apply only within 24 hours of the calculated event',
   }
 });
 
+test('phase labels and event names use identical casing for every principal phase', () => {
+  const expected = ['New Moon','First quarter','Full Moon','Last quarter'];
+  for (const event of nextPhases(new Date('2026-10-01T00:00:00Z'))) {
+    assert.equal(event.name,expected[event.quarter]);
+    assert.equal(phaseName(event.date),event.name);
+  }
+});
+
 test('the reported 68%-lit regression is waning gibbous in both APIs', () => {
   const date = new Date('2026-10-31T08:00:00Z');
   const moon = calculateMoon({date,observer});

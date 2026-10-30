@@ -26,6 +26,12 @@ test('classic scripts load core first and full later without DOM, network, GPU, 
   for (const name of ['calculateMoon','phaseName','riseSet','nextPhases','calculateSky']) {
     assert.equal(typeof sandbox.LaLune[name],'function');
   }
+  for (const api of [sandbox.LaLuneCore,sandbox.LaLune]) {
+    for (const event of api.nextPhases(new Date('2026-10-01T00:00:00Z'))) {
+      assert.equal(event.name,['New Moon','First quarter','Full Moon','Last quarter'][event.quarter]);
+      assert.equal(event.name,api.phaseName(event.date));
+    }
+  }
   assert.deepEqual(Object.keys(sandbox).filter(key=>!before.has(key)).sort(),['LaLune','LaLuneCore']);
 });
 

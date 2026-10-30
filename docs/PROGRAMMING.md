@@ -4,7 +4,7 @@ La Lune calculates and renders the Moon for a time and an observer on Earth.
 It ships ESM JavaScript with TypeScript declarations and standalone classic
 script-tag builds. A framework and build tool are optional.
 
-This guide covers the 0.2.0 API. The npm package name is `@toppk/lalune`.
+This guide covers the 0.2.1 API. The npm package name is `@toppk/lalune`.
 Install a published release with `npm install @toppk/lalune`, or use a local
 tarball as described below.
 
@@ -17,10 +17,10 @@ npm ci
 npm pack
 ```
 
-`npm pack` builds the library and writes `toppk-lalune-0.2.0.tgz`. In your application:
+`npm pack` builds the library and writes `toppk-lalune-0.2.1.tgz`. In your application:
 
 ```sh
-npm install /absolute/path/to/toppk-lalune-0.2.0.tgz
+npm install /absolute/path/to/toppk-lalune-0.2.1.tgz
 ```
 
 The tarball contains compiled JavaScript, declarations, maps, documentation,
@@ -277,8 +277,8 @@ phase-only callers should use `phaseName()` instead of inventing an observer.
 
 `nextPhases(date = new Date(), count = 4)` returns the next `count` geocentric
 events strictly after the supplied instant. `quarter` is 0=new, 1=first,
-2=full, 3=last. Event names use sentence case (`New moon`, `Full moon`);
-`phaseName` retains the older `New Moon`/`Full Moon` spellings for compatibility.
+2=full, 3=last. Both naming APIs use the same spellings: `New Moon`,
+`First quarter`, `Full Moon`, and `Last quarter`.
 `count` must be a nonnegative safe integer; zero returns an empty array.
 Returned Dates are independent values and can be formatted or copied freely.
 

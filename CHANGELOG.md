@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.1 — 2026-10-30
+
+- Make `nextPhases()` use exactly the same principal-phase names as
+  `phaseName()`: `New Moon`, `First quarter`, `Full Moon`, `Last quarter`.
+  Both APIs now share one name table. This corrects the casing mismatch
+  introduced in 0.2.0; event times and phase calculations are unchanged.
+
 ## 0.2.0 — 2026-10-30
 
 - Add classic script-tag builds: `dist/lalune-core.iife.min.js` (`LaLuneCore`)

@@ -1,6 +1,6 @@
 {
   "name": "@toppk/lalune",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A Moon renderer using NASA imagery and location-aware astronomy.",
   "repository": {
     "type": "git",

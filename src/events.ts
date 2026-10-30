@@ -2,10 +2,10 @@ import { Body, MoonPhase, NextMoonQuarter, Observer, SearchMoonQuarter, SearchRi
 import type { Location } from './core.js';
 
 const DAY_MS = 86400000;
-const EVENT_NAMES = ['New moon', 'First quarter', 'Full moon', 'Last quarter'] as const;
-const DISPLAY_NAMES = ['New Moon', 'First quarter', 'Full Moon', 'Last quarter'] as const;
+// One vocabulary for both standalone labels and event results.
+const PHASE_NAMES = ['New Moon', 'First quarter', 'Full Moon', 'Last quarter'] as const;
 export interface PhaseEvent {
-  name: typeof EVENT_NAMES[number];
+  name: typeof PHASE_NAMES[number];
   /** 0=new, 1=first quarter, 2=full, 3=last quarter. */
   quarter: 0 | 1 | 2 | 3;
   date: Date;
@@ -39,7 +39,7 @@ export function nextPhases(date: Date = new Date(), count = 4): PhaseEvent[] {
   const result: PhaseEvent[] = [];
   for (let i = 0; i < count; i++) {
     const quarter = event.quarter as PhaseEvent['quarter'];
-    result.push({ name: EVENT_NAMES[quarter], quarter, date: new Date(event.time.date.getTime()) });
+    result.push({ name: PHASE_NAMES[quarter], quarter, date: new Date(event.time.date.getTime()) });
     if (i+1 < count) event = NextMoonQuarter(event);
   }
   return result;
@@ -62,7 +62,7 @@ export function phaseName(date: Date = new Date()): string {
     labelCandidates.set(day, candidates);
   }
   const principal = candidates.find(event => Math.abs(event.ms-ms) <= DAY_MS);
-  if (principal) return DISPLAY_NAMES[principal.quarter];
+  if (principal) return PHASE_NAMES[principal.quarter];
   const longitude = MoonPhase(time);
   return longitude < 90 ? 'Waxing crescent' : longitude < 180 ? 'Waxing gibbous'
     : longitude < 270 ? 'Waning gibbous' : 'Waning crescent';
