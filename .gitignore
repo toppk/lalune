@@ -1,0 +1,9 @@
+node_modules/
+dist/
+demo-dist/
+.asset-cache/
+*.tgz
+# Exclude the unverified third-party image previously used as a reference.
+moon_lroc_4k.jpg
+# Local npm authentication must never enter the repository.
+.npmrc

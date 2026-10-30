@@ -1,0 +1,56 @@
+{
+  "name": "lalune",
+  "version": "0.1.0",
+  "description": "A Moon renderer using NASA imagery and location-aware astronomy.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/toppk/lalune.git"
+  },
+  "homepage": "https://github.com/toppk/lalune#readme",
+  "bugs": { "url": "https://github.com/toppk/lalune/issues" },
+  "keywords": ["moon", "lunar", "astronomy", "nasa", "webgl", "threejs"],
+  "publishConfig": { "access": "public" },
+  "type": "module",
+  "license": "MIT",
+  "files": [
+    "dist",
+    "assets",
+    "docs",
+    "ASSETS.md",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./core": {
+      "types": "./dist/core.d.ts",
+      "import": "./dist/core.js"
+    },
+    "./assets/*": "./assets/*"
+  },
+  "sideEffects": false,
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "npm run build:lib && npm run build:demo",
+    "build:lib": "tsc -p tsconfig.lib.json",
+    "build:demo": "vite build",
+    "check": "tsc --noEmit",
+    "test": "node --import tsx --test tests/*.test.ts",
+    "assets:fetch": "node scripts/fetch-assets.mjs",
+    "prepack": "npm run build:lib"
+  },
+  "dependencies": {
+    "astronomy-engine": "^2.1.19",
+    "three": "^0.180.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/three": "^0.180.0",
+    "sharp": "^0.35.5",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0",
+    "vite": "^7.1.0"
+  }
+}

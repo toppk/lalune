@@ -1,0 +1,17 @@
+{
+  "sourcePage": "https://svs.gsfc.nasa.gov/4720/",
+  "files": [
+    {
+      "file": "moon-color-4k.jpg",
+      "source": "https://svs.gsfc.nasa.gov/vis/a000000/a004700/a004720/lroc_color_16bit_srgb_4k.tif",
+      "sourceSha256": "9731fa8af425b6c2f88f277ecca82bf8c603f3743894f64ed7b25c5bfefa22ff",
+      "sha256": "a22ad9ac0b1feffeb9190952ce6e4f0392643e79095c0690fcc964d133984a91"
+    },
+    {
+      "file": "moon-height-4k.png",
+      "source": "https://svs.gsfc.nasa.gov/vis/a000000/a004700/a004720/ldem_16_uint.tif",
+      "sourceSha256": "45a2b32d56e81ed30db07fead8abc842b249b6511219d9ca2c53f81bc2dc5d62",
+      "sha256": "f18b934881906117b99ed3ca2ab827b6c2fc17e5c4e06667f3f33598bbf7811d"
+    }
+  ]
+}

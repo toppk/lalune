@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#101313" />
+    <meta name="description" content="The Moon, from where you stand. An open-source lunar renderer built with NASA imagery and observer-aware astronomy." />
+    <title>La Lune — The Moon, from where you stand</title>
+  </head>
+  <body>
+    <header><a class="brand" href="./">la lune<span>☾</span></a><span class="header-note">A small observatory for the web</span><a href="#embed" class="header-link">Use the library <span>↗</span></a></header>
+    <main>
+      <section class="intro"><span class="eyebrow">AN OPEN-SOURCE LUNAR OBSERVATORY · v0.1</span><h1>The Moon,<br><em>from where you stand.</em></h1><p>One familiar world. A different view from every place on Earth.<br> Explore its light, its motion, and your place beneath it.</p></section>
+      <section class="observatory" aria-label="Interactive Moon observatory">
+        <div class="sky">
+          <div class="sky-top"><span><i></i> <span id="mode-label">LIVE OBSERVATION</span></span><span id="sky-location">NEW YORK</span></div>
+          <div id="moon" aria-busy="true"></div>
+          <p id="render-status" role="status">Loading NASA lunar maps…</p>
+          <div class="sky-bottom"><span>LRO / LROC + LOLA<br><small>NASA SCIENTIFIC VISUALIZATION STUDIO</small></span><span id="orientation-label">LOCAL ZENITH ↑</span></div>
+        </div>
+        <aside>
+          <div class="phase-heading"><span class="eyebrow">YOUR MOON</span><h2 id="phase">—</h2><span id="visibility" class="visibility">Calculating position</span></div>
+          <dl class="metrics"><div><dt>Illuminated</dt><dd id="illumination">—</dd></div><div><dt>Altitude <small>geometric</small></dt><dd id="altitude">—</dd></div><div><dt>Azimuth</dt><dd id="azimuth">—</dd></div><div><dt>Distance</dt><dd id="distance">—</dd></div><div><dt>Apparent diameter</dt><dd id="diameter">—</dd></div><div><dt>Sun altitude <small>geometric</small></dt><dd id="sun-altitude">—</dd></div><div><dt>Sky</dt><dd id="sky-period">—</dd></div></dl>
+          <form id="controls">
+            <label for="location">OBSERVING FROM</label><div class="location-row"><select id="location"><option value="nyc">New York City NY (US)</option><option value="la">Los Angeles CA (US)</option><option value="paris">Paris (FR)</option><option value="custom">Custom coordinates</option></select><button type="button" id="locate" title="Autodetect location" aria-label="Autodetect location">◎</button></div>
+            <div class="coordinates"><div><label for="latitude">LATITUDE</label><input id="latitude" type="number" min="-90" max="90" step="any" value="40.7142778" required></div><div><label for="longitude">LONGITUDE <small>east +</small></label><input id="longitude" type="number" min="-180" max="180" step="any" value="-74.0059722" required></div></div>
+            <label for="date">DATE & TIME <small>UTC</small></label><input id="date" type="datetime-local" step="1" required><output id="local-time"></output>
+            <label for="orientation">ORIENTATION</label><select id="orientation"><option value="horizon">As seen from here · local zenith up</option><option value="north">Telescope atlas · celestial north up</option></select>
+            <label class="check"><input id="dark-side" type="checkbox" checked> Show a faint dark side <span title="Artistic fill light, not calculated earthshine">ⓘ</span></label>
+            <label class="check"><input id="sky-colors" type="checkbox" checked> Sky colors <span title="Sun-driven sky and approximate daylight haze">ⓘ</span></label>
+          </form>
+          <p id="message" role="status"></p>
+        </aside>
+        <div class="timeline"><div class="timeline-title"><span class="eyebrow">FOLLOW THE LUNAR CYCLE</span><span id="time-label">—</span></div><label class="sr-only" for="time">Days from the current date</label><input id="time" type="range" min="-14" max="14" step="0.02" value="0"><div class="timeline-bottom"><span>−14 DAYS</span><div><button id="play" type="button">▶ Travel through time</button><button id="now" type="button">↺ Back to now</button></div><span>+14 DAYS</span></div></div>
+      </section>
+      <section class="details" id="embed"><div><span class="eyebrow">MADE TO BE SHARED</span><h2>A little Moon.<br>On any website.</h2><p>Framework independent. Transparent canvas. Self-hosted assets.<br>Bring your own interface; La Lune brings the Moon.</p><a href="https://svs.gsfc.nasa.gov/4720/" target="_blank" rel="noreferrer">Explore the NASA source imagery ↗</a></div><div class="code"><div><span>YOUR NEXT PROJECT</span><button type="button" id="copy">Copy code</button></div><pre><code id="snippet"></code></pre><p>MIT code · Public-domain NASA maps · No API keys</p></div></section>
+      <section class="science"><span class="eyebrow">BUILT ON OBSERVATION</span><p>LROC color imagery and LOLA terrain. IAU lunar rotation. Observer geometry powered by <a href="https://github.com/cosinekitty/astronomy">Astronomy Engine</a>. Surface lighting is a Lambert approximation. Optional sky colors and daylight haze use calculated Sun altitude with an illustrative palette. Weather, refraction, eclipses, and terrain cast shadows are not modeled.</p></section>
+    </main>
+    <footer><span>la lune <small>· A voyage, begun in 1902.</small></span><span>Open skies. Open source.</span></footer>
+    <script type="module" src="/demo/main.ts"></script>
+  </body>
+</html>
