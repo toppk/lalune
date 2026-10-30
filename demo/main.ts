@@ -87,7 +87,42 @@ function update() {
     text('render-status', `Unable to render the Moon: ${(error as Error).message}. A WebGL2-capable browser is required.`);
   }
 }
-function stopPlaying() { playing = false; text('play', '▶ Travel through time'); }
+// Demo pacing, not an astronomical constant: one simulated day per 20 real
+// seconds, with rendering capped at 12 fps (~6 simulated minutes per frame).
+const DAY_MS = 86400000;
+const PLAYBACK_FRAME_MS = 1000 / 12;
+const PLAYBACK_SPEED = DAY_MS / 20000;
+let playbackFrameId: number | undefined;
+let lastPlaybackTime = 0;
+let nextPlaybackFrame = 0;
+function stopPlaying() {
+  playing = false;
+  if (playbackFrameId !== undefined) cancelAnimationFrame(playbackFrameId);
+  playbackFrameId = undefined;
+  text('play', '▶ Travel through time');
+}
+function animatePlayback(timestamp: number) {
+  if (!playing) return;
+  playbackFrameId = requestAnimationFrame(animatePlayback);
+  if (document.hidden || timestamp < nextPlaybackFrame) return;
+  // Use elapsed monotonic time so speed stays consistent on slower devices.
+  // Schedule from the original cadence instead of accumulating frame delays.
+  const elapsed = timestamp - lastPlaybackTime;
+  lastPlaybackTime = timestamp;
+  nextPlaybackFrame += (Math.floor((timestamp-nextPlaybackFrame)/PLAYBACK_FRAME_MS)+1)*PLAYBACK_FRAME_MS;
+  const start = anchor.getTime() - 14*DAY_MS;
+  const end = anchor.getTime() + 14*DAY_MS;
+  const next = date.getTime() + elapsed*PLAYBACK_SPEED;
+  // Preserve fractional-frame overshoot when wrapping the 28-day window.
+  date = new Date(next > end ? start + (next-start) % (end-start) : next);
+  syncDate();
+}
+document.addEventListener('visibilitychange', () => {
+  // Treat time spent in a hidden tab as paused, rather than jumping ahead
+  // by hours/days when requestAnimationFrame resumes.
+  lastPlaybackTime = performance.now();
+  nextPlaybackFrame = lastPlaybackTime + PLAYBACK_FRAME_MS;
+});
 function syncDate() {
   input('date').value = dateValue();
   input('time').value = String((date.getTime()-anchor.getTime())/86400000);
@@ -123,8 +158,13 @@ element('now').addEventListener('click', () => {
   live = true; stopPlaying(); anchor = new Date(); date = new Date(anchor); syncDate();
 });
 element('play').addEventListener('click', () => {
-  live = false; playing = !playing;
-  text('play', playing ? 'Ⅱ Pause time travel' : '▶ Travel through time');
+  if (playing) { stopPlaying(); return; }
+  live = false;
+  playing = true;
+  lastPlaybackTime = performance.now();
+  nextPlaybackFrame = lastPlaybackTime + PLAYBACK_FRAME_MS;
+  text('play', 'Ⅱ Pause time travel');
+  playbackFrameId = requestAnimationFrame(animatePlayback);
 });
 element('locate').addEventListener('click', () => {
   if (!navigator.geolocation) { text('message', 'Geolocation is unavailable. Enter coordinates above.'); return; }
@@ -144,14 +184,9 @@ element('copy').addEventListener('click', async () => {
 const timer = window.setInterval(() => {
   if (document.hidden) return;
   if (live) { date = new Date(); anchor = new Date(date); syncDate(); }
-  else if (playing) {
-    date = new Date(date.getTime() + 3*3600000);
-    if ((date.getTime()-anchor.getTime())/86400000 > 14) date = new Date(anchor.getTime()-14*86400000);
-    syncDate();
-  }
 }, 1000);
 window.addEventListener('pagehide', event => {
   // A bfcache navigation preserves the page; leave resources for its return.
-  if (!event.persisted) { clearInterval(timer); view?.dispose(); }
+  if (!event.persisted) { clearInterval(timer); stopPlaying(); view?.dispose(); }
 });
 update();

@@ -27,6 +27,10 @@ coordinates, or use browser geolocation. All presets use the supplied exact
 DMS coordinates. Local time uses IANA timezone rules; the date editor is
 explicitly UTC, avoiding ambiguous times at daylight-saving transitions.
 
+Time travel advances one simulated day every 20 seconds at approximately
+12 updates per second, looping from +14 days back to −14 days. Playback pauses
+while the tab is hidden and resumes without catching up on time spent away.
+
 ## Embed
 
 Install the public package:
