@@ -3,6 +3,9 @@
 The Moon, from where you stand. A TypeScript library for rendering an
 observer-aware Moon on any website, with a small interactive demo.
 
+[Explore the live demo](https://toppk.github.io/lalune/) ·
+[View on npm](https://www.npmjs.com/package/@toppk/lalune)
+
 Code is MIT licensed. Bundled NASA assets have separate public-domain
 provenance and credits in [ASSETS.md](ASSETS.md). No API key or daily ephemeris
 download is required. Calculations run locally; images can be self-hosted.
@@ -109,7 +112,8 @@ npm run assets:fetch # optional; assets are already bundled
 
 Tests use committed NASA 2026 ephemeris records with source URL/checksum and
 run offline. Source TIFFs are cached in ignored `.asset-cache/`; generated
-browser maps are tracked. The demo is local and has not been deployed.
+browser maps are tracked. The demo deploys to [GitHub Pages](https://toppk.github.io/lalune/)
+from `master` using `.github/workflows/pages.yml`.
 
 All bundled maps come directly from NASA, with source URLs and checksums in
 [ASSETS.md](ASSETS.md). See [release instructions](docs/RELEASING.md) for packaging
