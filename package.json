@@ -1,5 +1,5 @@
 {
-  "name": "lalune",
+  "name": "@toppk/lalune",
   "version": "0.1.0",
   "description": "A Moon renderer using NASA imagery and location-aware astronomy.",
   "repository": {
@@ -7,9 +7,20 @@
     "url": "git+https://github.com/toppk/lalune.git"
   },
   "homepage": "https://github.com/toppk/lalune#readme",
-  "bugs": { "url": "https://github.com/toppk/lalune/issues" },
-  "keywords": ["moon", "lunar", "astronomy", "nasa", "webgl", "threejs"],
-  "publishConfig": { "access": "public" },
+  "bugs": {
+    "url": "https://github.com/toppk/lalune/issues"
+  },
+  "keywords": [
+    "moon",
+    "lunar",
+    "astronomy",
+    "nasa",
+    "webgl",
+    "threejs"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "license": "MIT",
   "files": [

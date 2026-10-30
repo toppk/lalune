@@ -5,9 +5,9 @@ It is an ESM JavaScript package with TypeScript declarations. A framework is
 optional; a bundler such as Vite is the easiest way to use the renderer and maps.
 There is no separate script-tag/UMD build at present.
 
-This guide covers the 0.1.0 API. The package has not yet been published to npm.
-Use a local tarball for now; after publication, use the actual published name
-and version rather than assuming the unscoped name `lalune` is available.
+This guide covers the 0.1.0 API. The npm package name is `@toppk/lalune`.
+Install a published release with `npm install @toppk/lalune`, or use a local
+tarball as described below.
 
 ## Install from this repository
 
@@ -18,10 +18,10 @@ npm ci
 npm pack
 ```
 
-`npm pack` builds the library and writes `lalune-0.1.0.tgz`. In your application:
+`npm pack` builds the library and writes `toppk-lalune-0.1.0.tgz`. In your application:
 
 ```sh
-npm install /absolute/path/to/lalune-0.1.0.tgz
+npm install /absolute/path/to/toppk-lalune-0.1.0.tgz
 ```
 
 The tarball contains compiled JavaScript, declarations, maps, documentation,
@@ -40,9 +40,9 @@ Add a container to your application's HTML. Its height must be nonzero:
 In your application's JavaScript module:
 
 ```js
-import { MoonView } from 'lalune';
-import textureUrl from 'lalune/assets/moon-color-4k.jpg?url';
-import heightUrl from 'lalune/assets/moon-height-4k.png?url';
+import { MoonView } from '@toppk/lalune';
+import textureUrl from '@toppk/lalune/assets/moon-color-4k.jpg?url';
+import heightUrl from '@toppk/lalune/assets/moon-height-4k.png?url';
 
 const container = document.querySelector('#moon');
 const status = document.querySelector('#status');
@@ -103,13 +103,13 @@ website. Choose one of these approaches:
 - **Vite asset imports**, as above. The bundler copies and fingerprints the
   files and returns working URLs, including a configured deployment base path.
 - **Copy to your public directory.** Copy the files from
-  `node_modules/lalune/assets/` to your application's static directory. Pass
+  `node_modules/@toppk/lalune/assets/` to your application's static directory. Pass
   URLs matching your deployment, such as `/assets/moon-color-4k.jpg`. Account
   for any subdirectory prefix in your site's URL.
 
 Both maps together are approximately 6.4 MB. The color map alone is about
 3.3 MB. Only files your application imports/serves and the viewer requests are
-needed by the browser. `lalune/core` loads no textures. Use ordinary HTTP cache
+needed by the browser. `@toppk/lalune/core` loads no textures. Use ordinary HTTP cache
 headers and versioned URLs when serving the images yourself. A different origin
 must permit CORS, because WebGL uploads the images as textures. Self-hosting
 avoids relying on NASA's servers at runtime.
@@ -174,7 +174,7 @@ determine the Moon's orientation and solar altitude independently of timezone.
 ## Calculations without WebGL
 
 ```js
-import { calculateMoon, calculateSky } from 'lalune/core';
+import { calculateMoon, calculateSky } from '@toppk/lalune/core';
 
 const state = calculateMoon({
   observer: { latitude: 40.7142778, longitude: -74.0059722 },
@@ -184,7 +184,7 @@ const sky = calculateSky(state.sunAltitudeDeg);
 console.log(state.altitudeDeg, sky.period);
 ```
 
-`lalune/core` works in Node or the browser without the DOM or loading Three.js.
+`@toppk/lalune/core` works in Node or the browser without the DOM or loading Three.js.
 The npm package still declares Three.js as a dependency, so npm installs it
 even when your application imports only the calculation entry point.
 

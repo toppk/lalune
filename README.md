@@ -26,13 +26,18 @@ explicitly UTC, avoiding ambiguous times at daylight-saving transitions.
 
 ## Embed
 
-This repository is the initial implementation; the package has not been
-published to npm. Build it with `npm run build:lib`, use a local package link
-or `npm pack`, then import `lalune` in your consuming project.
+Install the public package:
+
+```sh
+npm install @toppk/lalune
+```
+
+For local development, build it with `npm run build:lib`, use a local package
+link or `npm pack`, then import `@toppk/lalune` in your consuming project.
 
 ```ts
-import { MoonView } from 'lalune';
-// Bundlers can import asset URLs via lalune/assets/moon-color-4k.jpg.
+import { MoonView } from '@toppk/lalune';
+// Bundlers can import asset URLs via @toppk/lalune/assets/moon-color-4k.jpg.
 
 const moon = new MoonView(document.querySelector<HTMLElement>('#moon')!, {
   observer: { latitude: 40.7142778, longitude: -74.0059722, elevation: 0 },
@@ -61,7 +66,7 @@ Set `sky: true` for a Sun-driven sky background and approximate daylight haze;
 `moon.update({ sky: false })` restores transparency. The demo's **Sky colors**
 toggle enables this effect by default. Solar altitude is calculated for the
 observer; the colors and haze are illustrative, not a weather simulation.
-`calculateSky(state.sunAltitudeDeg)` is also exported from `lalune/core` for
+`calculateSky(state.sunAltitudeDeg)` is also exported from `@toppk/lalune/core` for
 matching your own container background to the renderer.
 
 `horizon` puts local zenith up; `north` puts celestial north of date up. The
@@ -77,7 +82,7 @@ should have its own scientific provenance.
 ## Calculations without a renderer
 
 ```ts
-import { calculateMoon } from 'lalune/core';
+import { calculateMoon } from '@toppk/lalune/core';
 
 const state = calculateMoon({
   date: new Date(),

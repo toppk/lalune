@@ -2,8 +2,9 @@
 
 Repository: https://github.com/toppk/lalune
 
-The initial npm package is not published yet. Name availability is not a
-reservation; verify the name/account before the first release.
+Package: `@toppk/lalune` (public, under the `toppk` user scope). Verify the
+account and published versions before each release; never overwrite an
+existing version or publish under the unscoped `lalune` name.
 
 ## Local checks
 
@@ -22,8 +23,8 @@ programming/science guides, LICENSE, and ASSETS.md. It must exclude source TIFF
 caches, credentials, `node_modules/`, and any third-party reference images.
 
 `npm pack` produces an installable `.tgz` for testing without publishing. Test
-that tarball in a separate application, including `lalune/core` imports and
-bundler imports from `lalune/assets/*`. The repository's **Package** workflow
+that tarball in a separate application, including `@toppk/lalune/core` imports and
+bundler imports from `@toppk/lalune/assets/*`. The repository's **Package** workflow
 runs checks and a dry run and uploads the tarball as an Actions artifact. It
 does not publish to npm and requires no npm token.
 
@@ -38,7 +39,7 @@ does not publish to npm and requires no npm token.
 4. When ready to make the version public, run `npm publish --access public`.
    Complete any required npm confirmation. A published name/version cannot be
    reused for a different archive; do not treat publication as a throwaway test.
-5. Verify the version with `npm view lalune@0.1.0`, then create the matching
+5. Verify the version with `npm view @toppk/lalune@0.1.0`, then create the matching
    GitHub release/tag and update the installation documentation to reflect
    the actual public package. These steps require deliberate release actions;
    the dry-run workflow does not perform them.

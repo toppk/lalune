@@ -23,7 +23,7 @@ let elevation = 0;
 let timeZone = 'America/New_York';
 const dateValue = () => date.toISOString().slice(0, 19);
 input('date').value = dateValue();
-const snippet = `import { MoonView } from 'lalune';
+const snippet = `import { MoonView } from '@toppk/lalune';
 
 const moon = new MoonView(container, {
   observer: { latitude: 40.7142778, longitude: -74.0059722 },
