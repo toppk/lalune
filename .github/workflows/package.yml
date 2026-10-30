@@ -16,6 +16,7 @@ jobs:
       - run: npm run check
       - run: npm test
       - run: npm run build
+      - run: npm run test:bundles
       - run: npm publish --dry-run
       - run: npm pack
       - uses: actions/upload-artifact@v4

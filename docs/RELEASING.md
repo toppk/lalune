@@ -13,13 +13,14 @@ npm ci
 npm run check
 npm test
 npm run build
+npm run test:bundles
 npm publish --dry-run --cache /tmp/lalune-npm-cache
 ```
 
 Dry run does not publish or reserve a package name, and it does not prove that
 your account has permission to publish. It builds and inspects the archive.
-The archive must include `dist/`, the two NASA maps and their manifest, README,
-programming/science guides, LICENSE, and ASSETS.md. It must exclude source TIFF
+The archive must include `dist/`, the 2K/4K NASA maps and their manifest, README,
+programming/science guides, LICENSE, THIRD_PARTY_NOTICES.txt, and ASSETS.md. It must exclude source TIFF
 caches, credentials, `node_modules/`, and any third-party reference images.
 
 `npm pack` produces an installable `.tgz` for testing without publishing. Test
@@ -39,7 +40,7 @@ does not publish to npm and requires no npm token.
 4. When ready to make the version public, run `npm publish --access public`.
    Complete any required npm confirmation. A published name/version cannot be
    reused for a different archive; do not treat publication as a throwaway test.
-5. Verify the version with `npm view @toppk/lalune@0.1.0`, then create the matching
+5. Verify the version with `npm view @toppk/lalune@0.2.0`, then create the matching
    GitHub release/tag and update the installation documentation to reflect
    the actual public package. These steps require deliberate release actions;
    the dry-run workflow does not perform them.

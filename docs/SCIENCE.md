@@ -70,8 +70,30 @@ true north pole of date, transformed back into EQJ.
 Angular diameter is `2 asin(R/d)` for radius R, distance d. Phase angle i =
 `acos(dot(unitSun, unitObserver))`; illuminated projected area fraction =
 `(1 + cos(i))/2`, obtained by projecting the day hemisphere onto the image plane.
-This is an area fraction independent of brightness law. Names are nearest 45°
-bins of `MoonPhase` geocentric ecliptic elongation, not exact event times.
+This is an area fraction independent of brightness law. In 0.2.0 principal
+labels are limited to ±24 elapsed hours of calculated events, replacing the
+broad 45° bins used in 0.1.0. This is a presentation policy, not a scientific
+definition of how long a principal phase lasts.
+
+### Principal phase and rise/set events
+
+`nextPhases` delegates to Astronomy Engine's `SearchMoonQuarter` and
+`NextMoonQuarter`, searching geocentric ecliptic Moon–Sun elongation at 0°, 90°,
+180°, and 270°. `phaseName` uses the same event searches with an exact ±24-hour
+window; ±12° elongation is only an approximation to that time window. It caches
+candidate numeric event instants for at most 32 UTC days to avoid repeating
+root searches every rendered frame. No average synodic cycle is used.
+
+`riseSet` delegates to `SearchRiseSet(Body.Moon, observer, direction, date,
+days, 0)`, with direction +1 for rise and −1 for set. The final zero places
+the eye on the local ground, without horizon dip. Events use the lunar upper
+limb and standard 34′ refraction, unlike the geometric center altitude returned
+by `calculateMoon`. Elevation defaults to sea level; specified elevation uses
+the dependency's U.S. Standard Atmosphere pressure model. There is no weather
+or local skyline correction. Null means no event within the requested elapsed
+time window. Sources: [Astronomy Engine event APIs](https://github.com/cosinekitty/astronomy/blob/master/source/js/README.md),
+[USNO phase definitions](https://aa.usno.navy.mil/faq/moon_phases), and
+[USNO rise/set definitions](https://aa.usno.navy.mil/faq/RST_defs).
 
 ## Display approximations
 
@@ -82,6 +104,18 @@ for aesthetics. No absolute radiance or magnitude is claimed. Surface normals
 use central finite differences of LOLA height divided by physical radius;
 longitude slope divides by cos(latitude). A polar clamp avoids a singularity.
 There is no artistic terrain exaggeration.
+
+Tint and brightness are explicitly aesthetic. When styling is enabled, the
+Moon's linear radiance is clamped to the displayable range, encoded with the
+sRGB transfer function, multiplied channel-by-channel by the tint's sRGB values
+and brightness, and decoded to linear before sky composition. Three.js supplies
+the sRGB transfer functions; see its [colorspace shader source](https://github.com/mrdoob/three.js/blob/r180/src/renderers/shaders/ShaderChunk/colorspace_pars_fragment.glsl.js).
+White tint / brightness 1 skip this path to preserve the old appearance.
+No tint or brightness is applied to foreground sky radiance or alpha. For
+brightness ≤1 without sky, each displayed Moon channel is bounded by the tint
+channel times brightness. This makes the Night palette's requested 0.55
+setting testable against the clock/text colors without claiming a calibrated
+screen luminance. The actual wall-screen comfort test remains external.
 
 `darkSide` is optional constant fill for visibility, default 0.015; use zero for
 an unlit night side. It does not calculate earthshine. There is no displacement,
@@ -131,6 +165,14 @@ frame handedness/orthonormality, both locations and hemispheres, and IANA DST
 display. Same-dependency checks catch integration errors rather than validating
 the underlying model independently. Tests run offline; expected values do not
 regenerate themselves.
+
+The committed `usno-events-2026.json` fixture records independent USNO API
+responses and their source hashes. Twelve October–December 2026 phase events
+are checked with a 120-second threshold against minute-resolution reference
+times. A New York rise/set pair is checked within 90 seconds. Boundary tests
+verify ±24-hour labels, strictly future event selection, finite windows, and
+polar non-events; geometric checks test limb/refraction and crossing direction.
+These thresholds cover the sampled cases, not arbitrary dates/locations.
 
 There is no precision guarantee outside the sampled year or for scientific
 use. Higher fidelity requires JPL ephemerides/SPICE, matched lunar reference

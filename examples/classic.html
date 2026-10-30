@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>La Lune · Classic-script example</title>
+<style>
+  body{margin:0;background:#0A0806;color:#C08A6C;font:16px/1.6 system-ui,sans-serif;text-align:center}
+  main{max-width:760px;margin:auto;padding:24px}h1{font-size:24px;font-weight:400}
+  #moon{height:min(710px,90vw);width:100%;position:relative}#fallback{position:absolute;inset:0;display:grid;place-items:center;font-size:48px}
+  #fallback[hidden]{display:none}button{font:inherit;color:inherit;background:transparent;border:1px solid #2A1E17;padding:8px 18px;cursor:pointer}
+  #caption{min-height:26px}a{color:inherit}
+</style>
+<main>
+  <h1>La Lune, without a build step</h1>
+  <div id="moon"><span id="fallback" role="img" aria-label="Moon">☾</span></div>
+  <p id="caption" role="status"></p>
+  <button id="show" type="button">Show Moon</button>
+  <p>Calculations load immediately; the renderer and maps load on demand.</p>
+  <a href="https://github.com/toppk/lalune">View the project ↗</a>
+</main>
+<script src="../dist/lalune-core.iife.min.js"></script>
+<script>
+  // Only coarse coordinates are public. The library makes no location request.
+  const observer = {latitude: 41, longitude: -74};
+  const container = document.getElementById('moon');
+  const fallback = document.getElementById('fallback');
+  const caption = document.getElementById('caption');
+  let moon;
+  function describe(date) {
+    const state = LaLuneCore.calculateMoon({observer, date});
+    caption.textContent = `${state.phaseName} · ${Math.round(state.illuminatedFraction*100)}% lit${state.altitudeDeg < 0 ? ' · below the horizon' : ''}`;
+    return state;
+  }
+  let rendererLoading;
+  function loadRenderer() {
+    if (window.LaLune) return Promise.resolve(window.LaLune);
+    if (!rendererLoading) rendererLoading = new Promise((resolve,reject) => {
+      const script = document.createElement('script');
+      script.src = '../dist/lalune.iife.min.js';
+      script.onload = () => window.LaLune ? resolve(window.LaLune) : reject(new Error('Renderer global missing'));
+      script.onerror = () => { script.remove(); rendererLoading = undefined; reject(new Error('Renderer load failed')); };
+      document.head.append(script);
+    });
+    return rendererLoading;
+  }
+  document.getElementById('show').addEventListener('click', async event => {
+    event.currentTarget.disabled = true;
+    try {
+      const {MoonView} = await loadRenderer();
+      moon = new MoonView(container, {
+        observer, date: new Date(), orientation: 'horizon', sky: false,
+        darkSide: 0.008, tint: '#C08A6C', brightness: 0.55,
+        textureUrl: '../assets/moon-color-2k.jpg', heightUrl: '../assets/moon-height-2k.png',
+      });
+      await moon.ready;
+      fallback.hidden = true;
+    } catch (error) {
+      moon?.dispose(); moon = undefined;
+      event.target.disabled = false;
+      console.error(error); // Existing icon and calculated caption stay visible.
+    }
+  });
+  describe(new Date());
+  const timer = setInterval(() => {
+    const date = new Date(); describe(date); moon?.update({date});
+  },60000);
+  window.addEventListener('pagehide', event => {
+    if (!event.persisted) { clearInterval(timer); moon?.dispose(); }
+  });
+</script>
+</html>

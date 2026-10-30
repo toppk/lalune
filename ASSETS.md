@@ -13,7 +13,10 @@ endorsement. Keep the credit and provenance with redistributed copies.
 | --- | --- | --- |
 | `assets/moon-color-4k.jpg` | [2025 LROC color map, 16-bit sRGB, 4096 × 2048](https://svs.gsfc.nasa.gov/vis/a000000/a004700/a004720/lroc_color_16bit_srgb_4k.tif) | 8-bit JPEG, quality 95, 4:4:4 chroma; no artistic recoloring |
 | `assets/moon-height-4k.png` | [LOLA unsigned 16-bit DEM, 5760 × 2880](https://svs.gsfc.nasa.gov/vis/a000000/a004700/a004720/ldem_16_uint.tif) | Resize to 4096 × 2048; linear 8-bit grayscale PNG, no contrast normalization |
+| `assets/moon-color-2k.jpg` | Same NASA 2025 LROC TIFF as the 4K map | Resize to 2048 × 1024; JPEG quality 95, 4:4:4 chroma |
+| `assets/moon-height-2k.png` | Same NASA LOLA TIFF as the 4K map | Resize to 2048 × 1024; linear 8-bit grayscale PNG; same elevation encoding |
 | `tests/fixtures/nasa-2026.json` | [2026 hourly ephemeris](https://svs.gsfc.nasa.gov/vis/a000000/a005500/a005587/mooninfo_2026.json), [context](https://svs.gsfc.nasa.gov/5587/) | Every 168th hourly record, unmodified; metadata added outside records |
+| `tests/fixtures/usno-events-2026.json` | [USNO phase events](https://aa.usno.navy.mil/api/moon/phases/date?date=2026-10-01&nump=12) and [New York rise/set reference](https://aa.usno.navy.mil/api/rstt/oneday?date=2026-10-30&coords=40.7142778,-74.0059722&tz=0) | Unmodified JSON responses inside source/hash wrappers; test reference only |
 
 The color product derives from the LROC WAC Hapke-normalized mosaic. It is an
 aesthetic visualization product rather than a calibrated scientific image.

@@ -11,6 +11,10 @@ export interface MoonViewOptions extends MoonOptions {
   darkSide?: number;
   /** Optional Sun-driven sky and approximate airlight; defaults to transparent. */
   sky?: boolean;
+  /** Display-space RGB multiplier, #RRGGBB. Default white preserves the map. */
+  tint?: string;
+  /** Display-space brightness multiplier, finite and >= 0. Default 1. */
+  brightness?: number;
   pixelRatio?: number;
 }
 
@@ -37,6 +41,9 @@ export class MoonView {
   constructor(private container: HTMLElement, options: MoonViewOptions) {
     this.current = calculateMoon(options);
     this.options = { ...options };
+    // Validate styling before allocating WebGL resources or changing the DOM.
+    const fill = this.darkSide(options.darkSide ?? 0.015);
+    const appearance = this.appearance(options.tint ?? '#ffffff', options.brightness ?? 1);
     this.renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     this.renderer.setClearColor(0x000000, 0);
     this.renderer.setPixelRatio(Math.min(options.pixelRatio ?? window.devicePixelRatio, 2));
@@ -47,7 +54,9 @@ export class MoonView {
       uniforms: {
         colorMap: { value: null }, heightMap: { value: null },
         hasHeight: { value: false }, sun: { value: new THREE.Vector3() },
-        darkSide: { value: this.darkSide(options.darkSide ?? 0.015) },
+        darkSide: { value: fill },
+        tint: { value: appearance.tint }, brightness: { value: appearance.brightness },
+        styled: { value: appearance.styled },
         skyRadiance: { value: new THREE.Color(0) }, transmission: { value: 1 },
       },
       vertexShader: `varying vec2 texUv;
@@ -62,6 +71,9 @@ export class MoonView {
         uniform float darkSide;
         uniform vec3 skyRadiance;
         uniform float transmission;
+        uniform vec3 tint;
+        uniform float brightness;
+        uniform bool styled;
         varying vec2 texUv;
         varying vec3 localPosition;
         void main() {
@@ -91,6 +103,14 @@ export class MoonView {
           incidence *= smoothstep(-0.005, 0.005, dot(normalize(localPosition), sun));
           vec3 albedo = texture2D(colorMap, texUv).rgb;
           vec3 lunarRadiance = albedo * (incidence * (1. - darkSide) + darkSide);
+          if (styled) {
+            // Styling is a display-space multiplier (like CSS brightness),
+            // not a change to the physical illumination. Apply only to the
+            // Moon, then decode back to linear for foreground sky composition.
+            // Three's IEC sRGB transfer functions are injected by WebGLProgram.
+            vec3 displayMoon = sRGBTransferOETF(vec4(clamp(lunarRadiance, 0., 1.), 1.)).rgb;
+            lunarRadiance = sRGBTransferEOTF(vec4(displayMoon * tint * brightness, 1.)).rgb;
+          }
           // Approximate foreground airlight: the same sky radiance is added
           // in front of the disk, including its night side. A background alone
           // would leave an implausible dark cutout in a bright daytime sky.
@@ -128,14 +148,18 @@ export class MoonView {
   get state(): MoonState { return structuredClone(this.current); }
 
   /** Asset URLs are fixed per instance; date/location/orientation can be updated. */
-  update(options: Partial<MoonOptions> & { darkSide?: number; sky?: boolean }): MoonState {
+  update(options: Partial<MoonOptions> & Pick<MoonViewOptions, 'darkSide' | 'sky' | 'tint' | 'brightness'>): MoonState {
     if (this.disposed) throw new Error('MoonView has been disposed');
     const next = { ...this.options, ...options };
     const state = calculateMoon(next);
     const fill = this.darkSide(next.darkSide ?? 0.015);
+    const appearance = this.appearance(next.tint ?? '#ffffff', next.brightness ?? 1);
     this.options = next;
     this.current = state;
     this.material.uniforms.darkSide.value = fill;
+    this.material.uniforms.tint.value.copy(appearance.tint);
+    this.material.uniforms.brightness.value = appearance.brightness;
+    this.material.uniforms.styled.value = appearance.styled;
     this.render();
     return this.state;
   }
@@ -163,6 +187,17 @@ export class MoonView {
   private darkSide(value: number): number {
     if (!Number.isFinite(value) || value < 0 || value > 0.2) throw new RangeError('darkSide must be between 0 and 0.2');
     return value;
+  }
+
+  private appearance(tint: string, brightness: number) {
+    if (typeof tint !== 'string' || !/^#[0-9a-f]{6}$/i.test(tint)) throw new RangeError('Tint must be a #RRGGBB hex color');
+    if (!Number.isFinite(brightness) || brightness < 0) throw new RangeError('Brightness must be finite and nonnegative');
+    const color = parseInt(tint.slice(1), 16);
+    return {
+      tint: new THREE.Vector3((color >> 16)/255, ((color >> 8) & 255)/255, (color & 255)/255),
+      brightness,
+      styled: color !== 0xffffff || brightness !== 1,
+    };
   }
 
   private render(): void {

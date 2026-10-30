@@ -9,6 +9,8 @@ import {
   RotateVector, Rotation_EQJ_HOR, Rotation_HOR_EQJ, Rotation_EQD_EQJ,
   HorizonFromVector, Vector, KM_PER_AU, MoonPhase,
 } from 'astronomy-engine';
+import { phaseName } from './events.js';
+export { phaseName, nextPhases, riseSet, type PhaseEvent, type RiseSetOptions } from './events.js';
 export { calculateSky, type SkyAppearance } from './sky.js';
 
 export type Vec3 = readonly [number, number, number];
@@ -128,14 +130,13 @@ export function calculateMoon(options: MoonOptions): MoonState {
   // smooth sphere is (1 + cos(i))/2; it is independent of the shading model.
   const cosPhase = clamp(dot(viewDirection, sunDirection));
   const phaseLongitudeDeg = MoonPhase(date);
-  const names = ['New Moon', 'Waxing crescent', 'First quarter', 'Waxing gibbous', 'Full Moon', 'Waning gibbous', 'Last quarter', 'Waning crescent'];
   return {
     date, observer: {latitude, longitude, elevation}, orientation, distanceKm,
     angularDiameterDeg: 2*Math.asin(MOON_RADIUS_KM / distanceKm)/RAD,
     altitudeDeg: horizon.lat, azimuthDeg: horizon.lon,
     sunAltitudeDeg: solarHorizon.lat,
     illuminatedFraction: (1+cosPhase)/2, phaseAngleDeg: Math.acos(cosPhase)/RAD,
-    phaseLongitudeDeg, phaseName: names[Math.round(phaseLongitudeDeg/45)%8],
+    phaseLongitudeDeg, phaseName: phaseName(date),
     subObserver: coordinates(viewDirection), subSolar: coordinates(sunDirection),
     viewDirection, sunDirection, upDirection,
   };
